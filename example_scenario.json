@@ -1,10 +1,21 @@
 {
-  "owner_age": 58,
+  "owner_age": 60,
   "products": [
+    {
+      "name": "Fixed Annuity – Carrier A",
+      "annuity_type": "Fixed",
+      "premium": 100000,
+      "term_years": 10,
+      "interest_rate": 0.045,
+      "annual_fee": 0.0,
+      "surrender_schedule": [0.10, 0.09, 0.08, 0.07, 0.06, 0.05, 0.04, 0.03, 0.02, 0.01],
+      "carrier": "Carrier A Insurance",
+      "am_best_rating": "A+"
+    },
     {
       "name": "MYGA – Athene 5-Year",
       "annuity_type": "MYGA",
-      "premium": 150000,
+      "premium": 100000,
       "term_years": 5,
       "interest_rate": 0.055,
       "annual_fee": 0.0,
@@ -13,29 +24,17 @@
       "am_best_rating": "A"
     },
     {
-      "name": "MYGA – American National 7-Year",
-      "annuity_type": "MYGA",
-      "premium": 150000,
-      "term_years": 7,
-      "interest_rate": 0.058,
-      "annual_fee": 0.0,
-      "surrender_schedule": [0.09, 0.08, 0.07, 0.06, 0.05, 0.04, 0.03],
-      "carrier": "American National",
-      "am_best_rating": "A"
-    },
-    {
-      "name": "FIA w/ Income Rider",
+      "name": "FIA w/ Income Rider – American National",
       "annuity_type": "FIA",
-      "premium": 150000,
+      "premium": 100000,
       "term_years": 10,
-      "interest_rate": 0.08,
       "participation_rate": 0.85,
       "cap_rate": 0.10,
       "floor_rate": 0.0,
       "annual_fee": 0.01,
       "income_rider_rate": 0.07,
       "surrender_schedule": [0.10, 0.09, 0.08, 0.07, 0.06, 0.05, 0.04, 0.03, 0.02, 0.01],
-      "carrier": "American National",
+      "carrier": "American National Insurance",
       "am_best_rating": "A"
     }
   ]
