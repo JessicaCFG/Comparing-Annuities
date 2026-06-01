@@ -123,6 +123,173 @@ class AnnuityProjector:
 
 
 # ─────────────────────────────────────────────
+# Annuity Type Classes
+# ─────────────────────────────────────────────
+
+class FixedAnnuity:
+    """Fixed Annuity product class."""
+
+    def __init__(self, config: dict):
+        """Initialize FixedAnnuity from config dict."""
+        self.name = config.get("name", "")
+        self.annuity_type = "Fixed"
+        self.premium = config.get("premium", 0)
+        self.term_years = config.get("term_years", 1)
+        self.interest_rate = config.get("interest_rate", 0)
+        self.annual_fee = config.get("annual_fee", 0.0)
+        self.surrender_schedule = config.get("surrender_schedule", [])
+        self.carrier = config.get("carrier", "")
+        self.am_best_rating = config.get("am_best_rating", "")
+
+    def calculate_projection(self) -> list[dict]:
+        """Calculate year-by-year projection."""
+        rows = []
+        value = self.premium
+
+        for yr in range(1, self.term_years + 1):
+            bov = value
+            interest = bov * self.interest_rate
+            fees = bov * self.annual_fee
+            value = bov + interest - fees
+            
+            sc_pct = self.surrender_schedule[yr - 1] if yr <= len(self.surrender_schedule) else 0.0
+            surrender_value = value * (1 - sc_pct)
+
+            rows.append({
+                "year": yr,
+                "beginning_value": round(bov, 2),
+                "interest_earned": round(interest, 2),
+                "fees": round(fees, 2),
+                "account_value": round(value, 2),
+                "ending_value": round(value, 2),
+                "surrender_charge_rate": sc_pct,
+                "surrender_value": round(surrender_value, 2),
+            })
+
+        return rows
+
+    def get_end_value(self) -> float:
+        """Get the ending account value at end of term."""
+        projection = self.calculate_projection()
+        return projection[-1]["ending_value"] if projection else self.premium
+
+
+class MYGAAnnuity:
+    """Multi-Year Guaranteed Annuity (MYGA) product class."""
+
+    def __init__(self, config: dict):
+        """Initialize MYGAAnnuity from config dict."""
+        self.name = config.get("name", "")
+        self.annuity_type = "MYGA"
+        self.premium = config.get("premium", 0)
+        self.term_years = config.get("term_years", 1)
+        self.interest_rate = config.get("interest_rate", 0)
+        self.annual_fee = config.get("annual_fee", 0.0)
+        self.surrender_schedule = config.get("surrender_schedule", [])
+        self.carrier = config.get("carrier", "")
+        self.am_best_rating = config.get("am_best_rating", "")
+
+    def calculate_projection(self) -> list[dict]:
+        """Calculate year-by-year projection."""
+        rows = []
+        value = self.premium
+
+        for yr in range(1, self.term_years + 1):
+            bov = value
+            interest = bov * self.interest_rate
+            fees = bov * self.annual_fee
+            value = bov + interest - fees
+            
+            sc_pct = self.surrender_schedule[yr - 1] if yr <= len(self.surrender_schedule) else 0.0
+            surrender_value = value * (1 - sc_pct)
+
+            rows.append({
+                "year": yr,
+                "beginning_value": round(bov, 2),
+                "interest_earned": round(interest, 2),
+                "fees": round(fees, 2),
+                "account_value": round(value, 2),
+                "ending_value": round(value, 2),
+                "surrender_charge_rate": sc_pct,
+                "surrender_value": round(surrender_value, 2),
+            })
+
+        return rows
+
+    def get_end_value(self) -> float:
+        """Get the ending account value at end of term."""
+        projection = self.calculate_projection()
+        return projection[-1]["ending_value"] if projection else self.premium
+
+
+class FIAAnnuity:
+    """Fixed Indexed Annuity (FIA) product class."""
+
+    def __init__(self, config: dict):
+        """Initialize FIAAnnuity from config dict."""
+        self.name = config.get("name", "")
+        self.annuity_type = "FIA"
+        self.premium = config.get("premium", 0)
+        self.term_years = config.get("term_years", 1)
+        self.participation_rate = config.get("participation_rate", 1.0)
+        self.cap_rate = config.get("cap_rate")
+        self.floor_rate = config.get("floor_rate", 0.0)
+        self.annual_fee = config.get("annual_fee", 0.0)
+        self.income_rider_rate = config.get("income_rider_rate", 0.0)
+        self.market_return_rate = config.get("market_return_rate", 0.07)
+        self.surrender_schedule = config.get("surrender_schedule", [])
+        self.carrier = config.get("carrier", "")
+        self.am_best_rating = config.get("am_best_rating", "")
+
+    def _calculate_credited_rate(self) -> float:
+        """Calculate the credited rate considering participation, cap, and floor."""
+        credited = self.market_return_rate * self.participation_rate
+        if self.cap_rate is not None:
+            credited = min(credited, self.cap_rate)
+        credited = max(credited, self.floor_rate)
+        return credited
+
+    def calculate_projection(self) -> list[dict]:
+        """Calculate year-by-year projection."""
+        rows = []
+        value = self.premium
+        income_base = self.premium
+
+        for yr in range(1, self.term_years + 1):
+            bov = value
+            credited_rate = self._calculate_credited_rate()
+            interest = bov * credited_rate
+            fees = bov * self.annual_fee
+            value = bov + interest - fees
+            
+            # Compound income rider benefit base
+            income_base *= (1 + self.income_rider_rate)
+            
+            sc_pct = self.surrender_schedule[yr - 1] if yr <= len(self.surrender_schedule) else 0.0
+            surrender_value = value * (1 - sc_pct)
+
+            rows.append({
+                "year": yr,
+                "beginning_value": round(bov, 2),
+                "credited_rate": credited_rate,
+                "interest_earned": round(interest, 2),
+                "fees": round(fees, 2),
+                "account_value": round(value, 2),
+                "ending_value": round(value, 2),
+                "surrender_charge_rate": sc_pct,
+                "surrender_value": round(surrender_value, 2),
+                "income_base": round(income_base, 2),
+            })
+
+        return rows
+
+    def get_end_value(self) -> float:
+        """Get the ending account value at end of term."""
+        projection = self.calculate_projection()
+        return projection[-1]["ending_value"] if projection else self.premium
+
+
+# ─────────────────────────────────────────────
 # Comparison Engine
 # ─────────────────────────────────────────────
 
