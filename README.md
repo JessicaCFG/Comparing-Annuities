@@ -21,7 +21,7 @@ Built by [CAER Financial Group](https://caerfinancialgroup.com) | Faith · Famil
 ## Installation
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/annuity-comparator.git
+git clone https://github.com/JessicaCFG/annuity-comparator.git
 cd annuity-comparator
 pip install tabulate
 ```
