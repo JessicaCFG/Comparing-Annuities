@@ -4,6 +4,8 @@ A Python command-line tool for comparing **Fixed**, **MYGA**, and **Fixed Indexe
 
 Built by [CAER Financial Group](https://caerfinancialgroup.com) | Faith · Family · Financial Freedom
 
+**Tags:** `#annuity` `#financial-planning` `#retirement-planning` `#fixed-indexed-annuity` `#financial-advisor` `#investment-tool` `#python-cli` `#financial-calculator` `#wealth-management` `#insurance` `#MYGA` `#FIA` `#income-rider` `#fintech` `#open-source`
+
 ---
 
 ## Features
@@ -21,8 +23,8 @@ Built by [CAER Financial Group](https://caerfinancialgroup.com) | Faith · Famil
 ## Installation
 
 ```bash
-git clone https://github.com/JessicaCFG/annuity-comparator.git
-cd annuity-comparator
+git clone https://github.com/JessicaCFG/Comparing-Annuities.git
+cd Comparing-Annuities
 pip install tabulate
 ```
 
